@@ -20,10 +20,17 @@ RUN apt-get update && apt-get install -y \
 	ttf-freefont 
 
 # Add Chrome as a user
-#RUN groupadd -r chrome && useradd -r -g chrome -G audio,video chrome \
-#    && mkdir -p /home/chrome && chown -R chrome:chrome /home/chrome \
-#		&& mkdir -p /opt/google/chrome && chown -R chrome:chrome /opt/google/chrome
+RUN groupadd -r chrome && useradd -r -g chrome -G audio,video chrome \
+    && mkdir -p /home/chrome && chown -R chrome:chrome /home/chrome \
+		&& mkdir -p /opt/google/chrome && chown -R chrome:chrome /opt/google/chrome
 
 WORKDIR /home/chrome
 
+ARG CACHEBUST=1
 RUN npm install -g lighthouse
+
+# Run Chrome non-privileged
+USER chrome
+
+# Drop to cli
+CMD ["/bin/bash"]
